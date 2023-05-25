@@ -1,12 +1,12 @@
 class Cell
 {
-    constructor(tamanho, x, y, temExplosivo)
+    constructor(tamanho, x, y)
     {
         // largura e altura
         this.tamanho = tamanho;
         this.x = x;
         this.y = y;
-        this.temExplosivo = temExplosivo;
+        this.temExplosivo = false;
         this.revelado = false;
     }
 
@@ -15,4 +15,7 @@ class Cell
     getTamanho = () => this.tamanho;
 
     getRevelado = () => this.revelado;
+
+    getTemExplosivo = () => this.temExplosivo;
+    setTemExplosivo = (valor) => this.temExplosivo = valor;
 }

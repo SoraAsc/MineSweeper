@@ -20,8 +20,7 @@ class Grid
   getCell(x, y) 
   {
     if(this.cell[x] && this.cell[x][y])
-      return this.cell[x][y].getRevelado();
-    else return true;
+      return this.cell[x][y].getTemExplosivo();
   }
     
 }

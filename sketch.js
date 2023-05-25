@@ -17,9 +17,14 @@ function setup()
   // Inserir Bombas
   while (bombsNum > 0) 
   {
-    var linha = Math.random() * (canvasSize/cellSize + 1);
-    var coluna = Math.random() * (canvasSize/cellSize + 1);
-    bombsNum--;
+    var linha = Math.floor(Math.random() * (canvasSize/cellSize));
+    var coluna = Math.floor(Math.random() * (canvasSize/cellSize));
+    if(!cell[linha][coluna].getTemExplosivo())
+    {
+      cell[linha][coluna].setTemExplosivo(true);
+      bombsNum--;
+    }
+    
   }
 
   grid = new Grid(0, 0, cell);
@@ -30,14 +35,14 @@ function draw() {
   grid.place();
   //text(`Mouse: (${mouseX}, ${mouseY})`, 10, 20);
   //text(`Posição Grid: (${Math.floor(mouseX/cellSize)}, ${Math.floor(mouseY/cellSize)})`, 10, 20);
-  //text(`Valor: (${grid.getCell(Math.floor(mouseX/cellSize),Math.floor(mouseY/cellSize))})`, 10, 20);
+  text(`Valor: (${grid.getCell(Math.floor(mouseX/cellSize),Math.floor(mouseY/cellSize))})`, 10, 20);
   //text(`Touch: (${touches[0] ? touches[0].x : ''}, ${touches[0] ? touches[0].y : ''})`, 10, 40);
 }
 
 function mouseClicked() {
   // Handle mouse click event
   //text(`Valor: (${grid.getCell(Math.floor(mouseX/cellSize),Math.floor(mouseY/cellSize))})`, 10, 20);
-  // console.log(`Valor: (${grid.getCell(Math.floor(mouseX/cellSize),Math.floor(mouseY/cellSize))})`);
+  //console.log(`Valor: (${grid.getCell(Math.floor(mouseX/cellSize),Math.floor(mouseY/cellSize))})`);
   //console.log(`Mouse clicked at (${mouseX}, ${mouseY})`);
 }
 
