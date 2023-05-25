@@ -13,4 +13,6 @@ class Cell
     getX = () => this.x;
     getY = () => this.y;
     getTamanho = () => this.tamanho;
+
+    getRevelado = () => this.revelado;
 }
