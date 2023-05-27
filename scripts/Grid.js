@@ -13,7 +13,8 @@ class Grid
       for (const ele of elementos) {
         rect(ele.getX(), ele.getY(), ele.getTamanho());
         textSize(50);
-        text(ele.getIcone(), (ele.getTemExplosivo() ? 0 : 10) + ele.getX(), 42+ele.getY());
+        if(ele.getRevelado())
+          text(ele.getIcone(), (ele.getTemExplosivo() ? 0 : 10) + ele.getX(), 42+ele.getY());
       }
     }
   }
@@ -21,7 +22,7 @@ class Grid
   getCell(x, y) 
   {
     if(this.cell[x] && this.cell[x][y])
-      return this.cell[x][y].getTemExplosivo();
+      return this.cell[x][y];
   }
     
 }

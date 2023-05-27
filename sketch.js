@@ -50,7 +50,7 @@ function setup()
         //Diagonal Inferior
         if(cell[i+1] && cell[i+1][j+1] && cell[i+1][j+1].getTemExplosivo()) bomb_num+=1;
         if(cell[i-1] && cell[i-1][j+1] && cell[i-1][j+1].getTemExplosivo()) bomb_num+=1;
-        cell[i][j].setIcone(bomb_num == 0 ? "" : str(bomb_num));
+        cell[i][j].setIcone(bomb_num == 0 ? "0" : str(bomb_num));
       }
     }
   }
@@ -70,6 +70,15 @@ function draw() {
 }
 
 function mouseClicked() {
+  var x = Math.floor(mouseX/cellSize);
+  var y = Math.floor(mouseY/cellSize);
+
+  //console.log(x+" e "+y)
+  if(grid.getCell(x, y))
+  {
+    grid.getCell(x, y).setRevelado(true);
+  }
+
   // Handle mouse click event
   //text(`Valor: (${grid.getCell(Math.floor(mouseX/cellSize),Math.floor(mouseY/cellSize))})`, 10, 20);
   //console.log(`Valor: (${grid.getCell(Math.floor(mouseX/cellSize),Math.floor(mouseY/cellSize))})`);

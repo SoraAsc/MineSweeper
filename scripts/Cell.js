@@ -15,6 +15,7 @@ class Cell
     getY = () => this.y;
     getTamanho = () => this.tamanho;
 
+    setRevelado = (valor) => this.revelado = valor;
     getRevelado = () => this.revelado;
 
     getTemExplosivo = () => this.temExplosivo;
