@@ -24,10 +24,36 @@ function setup()
       cell[linha][coluna].setTemExplosivo(true);
       cell[linha][coluna].setIcone("☠");
       bombsNum--;
-    }    
+    }  
+      
   }
 
   // Setar Números
+  for(var i = 0; i < (canvasSize/cellSize); i++)
+  { 
+    for(var j = 0; j < (canvasSize/cellSize); j++)
+    {
+      var bomb_num = 0
+      if(!cell[i][j].getTemExplosivo())
+      {
+        //Horizontal
+        if(cell[i-1] && cell[i-1][j].getTemExplosivo()) bomb_num+=1;
+        if(cell[i+1] && cell[i+1][j].getTemExplosivo()) bomb_num+=1;
+        // //Vertical
+        if(cell[i][j-1] && cell[i][j-1].getTemExplosivo()) bomb_num+=1;
+        if(cell[i][j+1] && cell[i][j+1].getTemExplosivo()) bomb_num+=1;
+
+        //Diagonal Superior
+        if(cell[i+1] && cell[i+1][j-1] && cell[i+1][j-1].getTemExplosivo()) bomb_num+=1;
+        if(cell[i-1] && cell[i-1][j-1] && cell[i-1][j-1].getTemExplosivo()) bomb_num+=1;
+
+        //Diagonal Inferior
+        if(cell[i+1] && cell[i+1][j+1] && cell[i+1][j+1].getTemExplosivo()) bomb_num+=1;
+        if(cell[i-1] && cell[i-1][j+1] && cell[i-1][j+1].getTemExplosivo()) bomb_num+=1;
+        cell[i][j].setIcone(bomb_num == 0 ? "" : str(bomb_num));
+      }
+    }
+  }
 
 
   grid = new Grid(0, 0, cell);
@@ -36,8 +62,7 @@ function setup()
 function draw() {
   background('blue');
   grid.place();
-  //textSize(50)
-  //text("1", 10+50*0, 42+50*0)
+
   //text(`Mouse: (${mouseX}, ${mouseY})`, 10, 20);
   //text(`Posição Grid: (${Math.floor(mouseX/cellSize)}, ${Math.floor(mouseY/cellSize)})`, 10, 20);
   //text(`Valor: (${grid.getCell(Math.floor(mouseX/cellSize),Math.floor(mouseY/cellSize))})`, 10, 20);

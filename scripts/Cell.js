@@ -20,4 +20,5 @@ class Cell
     getTemExplosivo = () => this.temExplosivo;
     setTemExplosivo = (valor) => this.temExplosivo = valor;
     setIcone = (valor) => this.icone = valor;
+    getIcone = () => this.icone;
 }

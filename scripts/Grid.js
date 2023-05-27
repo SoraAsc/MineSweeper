@@ -13,7 +13,7 @@ class Grid
       for (const ele of elementos) {
         rect(ele.getX(), ele.getY(), ele.getTamanho());
         textSize(50);
-        text("1", 10+ele.getX(), 42+ele.getY());
+        text(ele.getIcone(), (ele.getTemExplosivo() ? 0 : 10) + ele.getX(), 42+ele.getY());
       }
     }
   }
