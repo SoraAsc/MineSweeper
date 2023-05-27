@@ -12,9 +12,10 @@ class Grid
     for (const elementos of this.cell) {
       for (const ele of elementos) {
         rect(ele.getX(), ele.getY(), ele.getTamanho());
+        textSize(50);
+        text("1", 10+ele.getX(), 42+ele.getY());
       }
     }
-    //rect(this.x, this.y, 50, 50);
   }
 
   getCell(x, y) 

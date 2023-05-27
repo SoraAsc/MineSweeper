@@ -8,6 +8,7 @@ class Cell
         this.y = y;
         this.temExplosivo = false;
         this.revelado = false;
+
     }
 
     getX = () => this.x;
@@ -18,4 +19,5 @@ class Cell
 
     getTemExplosivo = () => this.temExplosivo;
     setTemExplosivo = (valor) => this.temExplosivo = valor;
+    setIcone = (valor) => this.icone = valor;
 }

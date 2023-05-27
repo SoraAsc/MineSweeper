@@ -22,10 +22,13 @@ function setup()
     if(!cell[linha][coluna].getTemExplosivo())
     {
       cell[linha][coluna].setTemExplosivo(true);
+      cell[linha][coluna].setIcone("☠");
       bombsNum--;
-    }
-    
+    }    
   }
+
+  // Setar Números
+
 
   grid = new Grid(0, 0, cell);
 }
@@ -33,9 +36,11 @@ function setup()
 function draw() {
   background('blue');
   grid.place();
+  //textSize(50)
+  //text("1", 10+50*0, 42+50*0)
   //text(`Mouse: (${mouseX}, ${mouseY})`, 10, 20);
   //text(`Posição Grid: (${Math.floor(mouseX/cellSize)}, ${Math.floor(mouseY/cellSize)})`, 10, 20);
-  text(`Valor: (${grid.getCell(Math.floor(mouseX/cellSize),Math.floor(mouseY/cellSize))})`, 10, 20);
+  //text(`Valor: (${grid.getCell(Math.floor(mouseX/cellSize),Math.floor(mouseY/cellSize))})`, 10, 20);
   //text(`Touch: (${touches[0] ? touches[0].x : ''}, ${touches[0] ? touches[0].y : ''})`, 10, 40);
 }
 
