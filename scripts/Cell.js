@@ -8,17 +8,37 @@ class Cell
         this.y = y;
         this.temExplosivo = false;
         this.revelado = false;
+        this.textSize = 0; // Max 50
+        this.textAlpha = 0; // Max 255
     }
 
     getX = () => this.x;
     getY = () => this.y;
     getTamanho = () => this.tamanho;
 
-    setRevelado = (valor) => this.revelado = valor;
+    setRevelado(valor)
+    {
+        this.revelado = valor
+        this.show()
+    }
+
+    show()
+    {
+        this.textSize = min(this.textSize+5, 50)
+        this.textAlpha = min(this.textAlpha+20, 255)
+        if(this.textAlpha < 255 && this.textSize < 50)
+            this.show();
+    }
+
+    getTextAlpha = () => this.textAlpha
+    getTextSize = () => this.textSize
+
+    //setRevelado = (valor) => this.revelado = valor;
     getRevelado = () => this.revelado;
 
-    getTemExplosivo = () => this.temExplosivo;
     setTemExplosivo = (valor) => this.temExplosivo = valor;
+    getTemExplosivo = () => this.temExplosivo;
+
     setIcone = (valor) => this.icone = valor;
     getIcone = () => this.icone;
 }

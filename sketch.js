@@ -50,7 +50,7 @@ function setup()
         //Diagonal Inferior
         if(cell[i+1] && cell[i+1][j+1] && cell[i+1][j+1].getTemExplosivo()) bomb_num+=1;
         if(cell[i-1] && cell[i-1][j+1] && cell[i-1][j+1].getTemExplosivo()) bomb_num+=1;
-        cell[i][j].setIcone(bomb_num == 0 ? "0" : str(bomb_num));
+        cell[i][j].setIcone(bomb_num == 0 ? " " : str(bomb_num));
       }
     }
   }
@@ -60,7 +60,7 @@ function setup()
 }
 
 function draw() {
-  background('blue');
+  background('white');
   grid.place();
 
   //text(`Mouse: (${mouseX}, ${mouseY})`, 10, 20);
@@ -73,10 +73,10 @@ function draw() {
 function mouseClicked() {
   var x = Math.floor(mouseX/cellSize);
   var y = Math.floor(mouseY/cellSize);
-  if(grid.getCell(x, y))
+  if(grid.getCell(x, y) && !grid.getCell(x, y).getRevelado())
   {
     grid.getCell(x,y).setRevelado(true);
-    if(grid.getCell(x, y).getIcone() == "0")
+    if(grid.getCell(x, y).getIcone() == " ")
       Reveal(x, y);
   }
 }
@@ -92,7 +92,7 @@ function Reveal(x, y)
       if(!grid.getCell(i, j).getTemExplosivo())
         grid.getCell(i, j).setRevelado(true);
 
-      if(grid.getCell(i, j).getIcone() == "0")  
+      if(grid.getCell(i, j).getIcone() == " ")  
         Reveal(i, j);
       
     }
