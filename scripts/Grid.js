@@ -23,6 +23,7 @@ class Grid
   {
     if(this.cell[x] && this.cell[x][y])
       return this.cell[x][y];
+    return null;
   }
     
 }

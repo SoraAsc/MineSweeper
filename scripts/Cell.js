@@ -8,7 +8,6 @@ class Cell
         this.y = y;
         this.temExplosivo = false;
         this.revelado = false;
-
     }
 
     getX = () => this.x;

@@ -69,20 +69,34 @@ function draw() {
   //text(`Touch: (${touches[0] ? touches[0].x : ''}, ${touches[0] ? touches[0].y : ''})`, 10, 40);
 }
 
+
 function mouseClicked() {
   var x = Math.floor(mouseX/cellSize);
   var y = Math.floor(mouseY/cellSize);
-
-  //console.log(x+" e "+y)
   if(grid.getCell(x, y))
   {
-    grid.getCell(x, y).setRevelado(true);
+    grid.getCell(x,y).setRevelado(true);
+    if(grid.getCell(x, y).getIcone() == "0")
+      Reveal(x, y);
   }
+}
 
-  // Handle mouse click event
-  //text(`Valor: (${grid.getCell(Math.floor(mouseX/cellSize),Math.floor(mouseY/cellSize))})`, 10, 20);
-  //console.log(`Valor: (${grid.getCell(Math.floor(mouseX/cellSize),Math.floor(mouseY/cellSize))})`);
-  //console.log(`Mouse clicked at (${mouseX}, ${mouseY})`);
+function Reveal(x, y)
+{
+  for(let i = x-1; i < x+2; i++)
+  {
+    for(let j = y-1; j < y+2; j++)
+    {
+      if((i == x && j == y) || grid.getCell(i, j) == null || grid.getCell(i, j).getRevelado()) continue;
+
+      if(!grid.getCell(i, j).getTemExplosivo())
+        grid.getCell(i, j).setRevelado(true);
+
+      if(grid.getCell(i, j).getIcone() == "0")  
+        Reveal(i, j);
+      
+    }
+  }
 }
 
 function touchStarted() {
