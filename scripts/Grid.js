@@ -5,22 +5,35 @@ class Grid
     this.x = x;
     this.y = y;
     this.cell = cell;
+    this.evenColor = "#168aad" // cell color
+    this.oddColor = "#1a759f" // cell color
   }
     
   place() 
   {
-    for (const elementos of this.cell) {
-      for (const ele of elementos) {
-        // noStroke()
-        let textColor = color(255, 0, 0)
-        textColor.setAlpha(ele.getTextAlpha())
-        fill(textColor)
-        textSize(ele.getTextSize());
-        rect(ele.getX(), ele.getY(), ele.getTamanho());
+    let i = 0
+    for (const elements of this.cell) 
+    {
+      for (const ele of elements) 
+      {
+        stroke(0, 0, 0, 100)
+        strokeWeight(0.1)
+        // Painting the cell
+        if(ele.getRevelado()) fill(i % 2 == 0 ? '#d8d5db' : '#adacb8')
+        else fill(i % 2 == 0 ? this.evenColor : this.oddColor) 
+
+        rect(ele.getX(), ele.getY(), ele.getSize());
+        
+        // Painting the text
         if(ele.getRevelado())
+        {
+          textSize(ele.getTextSize());
+          let textColor = color("#2d3142")
+          textColor.setAlpha(ele.getTextAlpha())
+          fill(textColor)
           text(ele.getIcone(), (ele.getTemExplosivo() ? 0 : 10) + ele.getX(), 42+ele.getY());
-
-
+        }
+        i++
       }
     }
   }

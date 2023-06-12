@@ -1,9 +1,9 @@
 class Cell
 {
-    constructor(tamanho, x, y)
+    constructor(size, x, y)
     {
-        // largura e altura
-        this.tamanho = tamanho;
+        // Width and Height of the cell
+        this.size = size;
         this.x = x;
         this.y = y;
         this.temExplosivo = false;
@@ -14,7 +14,7 @@ class Cell
 
     getX = () => this.x;
     getY = () => this.y;
-    getTamanho = () => this.tamanho;
+    getSize = () => this.size;
 
     setRevelado(valor)
     {
@@ -25,9 +25,9 @@ class Cell
     show()
     {
         this.textSize = min(this.textSize+5, 50)
-        this.textAlpha = min(this.textAlpha+20, 255)
-        if(this.textAlpha < 255 && this.textSize < 50)
-            this.show();
+        this.textAlpha = min(this.textAlpha+10, 255)
+        if(this.textAlpha < 255 || this.textSize < 50)
+            setTimeout(() => this.show(), 10);
     }
 
     getTextAlpha = () => this.textAlpha
