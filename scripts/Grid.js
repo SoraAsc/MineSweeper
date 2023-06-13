@@ -19,19 +19,19 @@ class Grid
         stroke(0, 0, 0, 100)
         strokeWeight(0.1)
         // Painting the cell
-        if(ele.getRevelado()) fill(i % 2 == 0 ? '#d8d5db' : '#adacb8')
+        if(ele.getRevealState()) fill(i % 2 == 0 ? '#d8d5db' : '#adacb8')
         else fill(i % 2 == 0 ? this.evenColor : this.oddColor) 
 
         rect(ele.getX(), ele.getY(), ele.getSize());
         
         // Painting the text
-        if(ele.getRevelado())
+        if(ele.getRevealState())
         {
           textSize(ele.getTextSize());
           let textColor = color("#2d3142")
           textColor.setAlpha(ele.getTextAlpha())
           fill(textColor)
-          text(ele.getIcone(), (ele.getTemExplosivo() ? 0 : 10) + ele.getX(), 42+ele.getY());
+          text(ele.getIcon(), (ele.getContainsBomb() ? 0 : 10) + ele.getX(), 42+ele.getY());
         }
         i++
       }

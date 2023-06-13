@@ -19,10 +19,10 @@ function setup()
   {
     var linha = Math.floor(Math.random() * (canvasSize/cellSize));
     var coluna = Math.floor(Math.random() * (canvasSize/cellSize));
-    if(!cell[linha][coluna].getTemExplosivo())
+    if(!cell[linha][coluna].getContainsBomb())
     {
-      cell[linha][coluna].setTemExplosivo(true);
-      cell[linha][coluna].setIcone("☠");
+      cell[linha][coluna].placeBomb(true);
+      cell[linha][coluna].setIcon("☠");
       bombsNum--;
     }  
       
@@ -34,23 +34,23 @@ function setup()
     for(var j = 0; j < (canvasSize/cellSize); j++)
     {
       var bomb_num = 0
-      if(!cell[i][j].getTemExplosivo())
+      if(!cell[i][j].getContainsBomb())
       {
         //Horizontal
-        if(cell[i-1] && cell[i-1][j].getTemExplosivo()) bomb_num+=1;
-        if(cell[i+1] && cell[i+1][j].getTemExplosivo()) bomb_num+=1;
+        if(cell[i-1] && cell[i-1][j].getContainsBomb()) bomb_num+=1;
+        if(cell[i+1] && cell[i+1][j].getContainsBomb()) bomb_num+=1;
         // //Vertical
-        if(cell[i][j-1] && cell[i][j-1].getTemExplosivo()) bomb_num+=1;
-        if(cell[i][j+1] && cell[i][j+1].getTemExplosivo()) bomb_num+=1;
+        if(cell[i][j-1] && cell[i][j-1].getContainsBomb()) bomb_num+=1;
+        if(cell[i][j+1] && cell[i][j+1].getContainsBomb()) bomb_num+=1;
 
         //Diagonal Superior
-        if(cell[i+1] && cell[i+1][j-1] && cell[i+1][j-1].getTemExplosivo()) bomb_num+=1;
-        if(cell[i-1] && cell[i-1][j-1] && cell[i-1][j-1].getTemExplosivo()) bomb_num+=1;
+        if(cell[i+1] && cell[i+1][j-1] && cell[i+1][j-1].getContainsBomb()) bomb_num+=1;
+        if(cell[i-1] && cell[i-1][j-1] && cell[i-1][j-1].getContainsBomb()) bomb_num+=1;
 
         //Diagonal Inferior
-        if(cell[i+1] && cell[i+1][j+1] && cell[i+1][j+1].getTemExplosivo()) bomb_num+=1;
-        if(cell[i-1] && cell[i-1][j+1] && cell[i-1][j+1].getTemExplosivo()) bomb_num+=1;
-        cell[i][j].setIcone(bomb_num == 0 ? " " : str(bomb_num));
+        if(cell[i+1] && cell[i+1][j+1] && cell[i+1][j+1].getContainsBomb()) bomb_num+=1;
+        if(cell[i-1] && cell[i-1][j+1] && cell[i-1][j+1].getContainsBomb()) bomb_num+=1;
+        cell[i][j].setIcon(bomb_num == 0 ? " " : str(bomb_num));
       }
     }
   }
@@ -73,10 +73,10 @@ function draw() {
 function mouseClicked() {
   var x = Math.floor(mouseX/cellSize);
   var y = Math.floor(mouseY/cellSize);
-  if(grid.getCell(x, y) && !grid.getCell(x, y).getRevelado())
+  if(grid.getCell(x, y) && !grid.getCell(x, y).getRevealState())
   {
-    grid.getCell(x,y).setRevelado(true);
-    if(grid.getCell(x, y).getIcone() == " ")
+    grid.getCell(x,y).setRevealState(true);
+    if(grid.getCell(x, y).getIcon() == " ")
       Reveal(x, y);
   }
 }
@@ -87,12 +87,12 @@ function Reveal(x, y)
   {
     for(let j = y-1; j < y+2; j++)
     {
-      if((i == x && j == y) || grid.getCell(i, j) == null || grid.getCell(i, j).getRevelado()) continue;
+      if((i == x && j == y) || grid.getCell(i, j) == null || grid.getCell(i, j).getRevealState()) continue;
 
-      if(!grid.getCell(i, j).getTemExplosivo())
-        grid.getCell(i, j).setRevelado(true);
+      if(!grid.getCell(i, j).getContainsBomb())
+        grid.getCell(i, j).setRevealState(true);
 
-      if(grid.getCell(i, j).getIcone() == " ")  
+      if(grid.getCell(i, j).getIcon() == " ")  
         Reveal(i, j);
       
     }
