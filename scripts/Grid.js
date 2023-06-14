@@ -1,39 +1,42 @@
 class Grid 
 {
-  constructor(x, y, cell) 
+  constructor(x, y, cell, gridSize) 
   {
     this.x = x;
     this.y = y;
     this.cell = cell;
+    this.gridSize = gridSize
     this.evenColor = "#168aad" // cell color
     this.oddColor = "#1a759f" // cell color
   }
     
   place() 
   {
-    let i = 0
-    for (const elements of this.cell) 
+    for(let i = 0; i < this.gridSize; i++)
     {
-      for (const ele of elements) 
+      for(let j = 0; j < this.gridSize; j++)
       {
         stroke(0, 0, 0, 100)
         strokeWeight(0.1)
-        // Painting the cell
-        if(ele.getRevealState()) fill(i % 2 == 0 ? '#d8d5db' : '#adacb8')
-        else fill(i % 2 == 0 ? this.evenColor : this.oddColor) 
 
-        rect(ele.getX(), ele.getY(), ele.getSize());
+        // Painting the cell
+        const isEven = (i + j) % 2 === 0;
+
+        if(this.cell[i][j].getRevealState()) fill(isEven ? '#d8d5db' : '#adacb8')
+        else fill(isEven ? this.evenColor : this.oddColor) 
+        
+        rect(this.cell[i][j].getX(), this.cell[i][j].getY(), this.cell[i][j].getSize());
         
         // Painting the text
-        if(ele.getRevealState())
+        if(this.cell[i][j].getRevealState())
         {
-          textSize(ele.getTextSize());
-          let textColor = color("#2d3142")
-          textColor.setAlpha(ele.getTextAlpha())
+          textSize(this.cell[i][j].getTextSize());
+          let textColor = color(this.cell[i][j].getTextColor())
+          textColor.setAlpha(this.cell[i][j].getTextAlpha())
           fill(textColor)
-          text(ele.getIcon(), (ele.getContainsBomb() ? 0 : 10) + ele.getX(), 42+ele.getY());
+          text(this.cell[i][j].getIcon(), (this.cell[i][j].getContainsBomb() ? 0 : 10) + 
+            this.cell[i][j].getX(), 42 + this.cell[i][j].getY());
         }
-        i++
       }
     }
   }

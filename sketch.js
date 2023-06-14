@@ -1,62 +1,64 @@
-var grid = new Grid(0,0, [,]);
+var grid;
 var cellSize = 50, canvasSize = 450, bombsNum = 10;
 function setup() 
 {
+  
+  // GRID Initial Position
   createCanvas(canvasSize, canvasSize);
-  // Posição Inicial da Grid.
+  
   var cell = []
-  for(var i = 0; i < (canvasSize/cellSize); i++)
+  var gridSize = floor((canvasSize/cellSize))
+
+  for(let i = 0; i < gridSize; i++)
   { 
     cell.push([]);
-    for(var j = 0; j < (canvasSize/cellSize); j++)
+    for(let j = 0; j < gridSize; j++)
     {
-        cell[i].push(new Cell(cellSize, i*cellSize, j*cellSize, true));
+        cell[i].push(new Cell(cellSize, i*cellSize, j*cellSize));
     }
   }
 
-  // Inserir Bombas
+  // Insert the bombs (skull)
   while (bombsNum > 0) 
   {
-    var linha = Math.floor(Math.random() * (canvasSize/cellSize));
-    var coluna = Math.floor(Math.random() * (canvasSize/cellSize));
-    if(!cell[linha][coluna].getContainsBomb())
+    var gridLine = Math.floor(Math.random() * (canvasSize/cellSize));
+    var gridCol = Math.floor(Math.random() * (canvasSize/cellSize));
+    if(!cell[gridLine][gridCol].getContainsBomb())
     {
-      cell[linha][coluna].placeBomb(true);
-      cell[linha][coluna].setIcon("☠");
+      cell[gridLine][gridCol].placeBomb(true)
+      cell[gridLine][gridCol].setIcon("☠")
       bombsNum--;
     }  
       
   }
 
-  // Setar Números
-  for(var i = 0; i < (canvasSize/cellSize); i++)
+  // Calc neighboors numbers
+  for(let i = 0; i < gridSize; i++)
   { 
-    for(var j = 0; j < (canvasSize/cellSize); j++)
+    for(let j = 0; j < gridSize; j++)
     {
       var bomb_num = 0
       if(!cell[i][j].getContainsBomb())
       {
-        //Horizontal
+        // Horizontal
         if(cell[i-1] && cell[i-1][j].getContainsBomb()) bomb_num+=1;
         if(cell[i+1] && cell[i+1][j].getContainsBomb()) bomb_num+=1;
-        // //Vertical
+        // Vertical
         if(cell[i][j-1] && cell[i][j-1].getContainsBomb()) bomb_num+=1;
         if(cell[i][j+1] && cell[i][j+1].getContainsBomb()) bomb_num+=1;
 
-        //Diagonal Superior
+        // Upper Diagonal
         if(cell[i+1] && cell[i+1][j-1] && cell[i+1][j-1].getContainsBomb()) bomb_num+=1;
         if(cell[i-1] && cell[i-1][j-1] && cell[i-1][j-1].getContainsBomb()) bomb_num+=1;
 
-        //Diagonal Inferior
+        // Bottom Diagonal
         if(cell[i+1] && cell[i+1][j+1] && cell[i+1][j+1].getContainsBomb()) bomb_num+=1;
         if(cell[i-1] && cell[i-1][j+1] && cell[i-1][j+1].getContainsBomb()) bomb_num+=1;
         cell[i][j].setIcon(bomb_num == 0 ? " " : str(bomb_num));
       }
     }
   }
-
-
-  grid = new Grid(0, 0, cell);
+  grid = new Grid(0, 0, cell, gridSize);
 }
 
 function draw() {
