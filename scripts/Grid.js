@@ -57,5 +57,24 @@ class Grid
 		return this.cell[x][y];
 		return null;
 	}
+
+	checkIfThePlayerWin()
+	{
+		let revealedCells = 0
+		let leftBombsCount = 0
+		for(let i = 0; i < this.gridSizeX; i++)
+		{
+			for(let j = 0; j < this.gridSizeY; j++)
+			{
+				if(this.cell[i][j].getRevealState() && !this.cell[i][j].getContainsBomb())
+					revealedCells++
+				else if(this.cell[i][j].getContainsBomb() && !this.cell[i][j].getRevealState())
+					leftBombsCount++
+			}
+		}
+		if((this.gridSizeX*this.gridSizeY) - leftBombsCount  == revealedCells)
+			return true
+		return false
+	}
     
 }

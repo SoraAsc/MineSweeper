@@ -9,6 +9,7 @@ const canvasSizeX = 450, canvasSizeY = 450, cellSize = 50
 const topMenuSizeY = 60
 let bombsNum = 10, availableFlagsNum = 25
 let currentBombsNum = bombsNum, currentAvailableFlagsNum = availableFlagsNum
+let gUIRestartButton
 // =========================== GUI Variables =============================\\
 const selectSizeX = 90
 const defaultHtmlPadding = 16 // 1em = 16
@@ -19,16 +20,26 @@ let secondSinceStart = 0, minuteSinceStart = 0
 function setup() 
 {
 	// GRID Initial Position
-	
-	generateField(0, 0, 0)
 
 	dropdown = createSelect()
-	dropdown.position(defaultHtmlPadding + (canvasSizeX / 2) - selectSizeX/2, topMenuSizeY / 2)
 	dropdown.size(selectSizeX, topMenuSizeY / 2)
 	dropdown.option("Easy")
 	dropdown.option("Medium")
 	dropdown.option("Hard")
 	dropdown.changed(handleLVChange)
+
+	gUIRestartButton = createButton("Restart")	
+	gUIRestartButton.size(200, 30)	
+	gUIRestartButton.mousePressed(() => handleLVChange())
+	generateField(0, 0, 0)
+}
+
+function draw() {
+	background('#168aad')
+	
+	grid.place()
+	drawTopMenu()
+	if(grid.checkIfThePlayerWin()) drawStateMenu()
 }
 
 function handleLVChange()
@@ -46,15 +57,14 @@ function handleLVChange()
 	}
 }
 
-function draw() {
-	background('#168aad');
-	if(grid) grid.place()
-	drawTopMenu()
-}
 
 function generateField(additionalWidth, additionalHeight, additionalBombs)
 {
 	createCanvas(canvasSizeX + additionalWidth, canvasSizeY + topMenuSizeY + additionalHeight)
+
+	dropdown.position(defaultHtmlPadding + ((canvasSizeX + additionalWidth) / 2) - selectSizeX/2, topMenuSizeY / 2)
+	gUIRestartButton.position(defaultHtmlPadding + ((canvasSizeX + additionalWidth) / 2) - 100, height/1.5)
+	gUIRestartButton.hide()
 	startTime = millis()
 	var cell = []
 	
@@ -139,14 +149,17 @@ function drawStateMenu()
 {
 	fill(0,0,0, 100)
 	rect(width / 4, height / 4, width / 2, height / 2)
-	textAlign(CENTER)
+	textSize(30)
+	fill(255,255,255)
+	text("You Win", width / 2 - 60, height / 2)
+	gUIRestartButton.show()
 }
 
 
 function mouseClicked() {
 	let x = Math.floor(mouseX/cellSize);
 	let y = Math.floor((mouseY - topMenuSizeY)/cellSize);
-	if(grid.getCell(x, y) && !grid.getCell(x, y).getRevealState())
+	if(grid.getCell(x, y) && !grid.getCell(x, y).getRevealState() && !grid.checkIfThePlayerWin())
 	{
 		if(grid.getCell(x, y).getMark())
 		{
@@ -155,7 +168,7 @@ function mouseClicked() {
 		}
 		grid.getCell(x,y).setRevealState(true);
 		if(grid.getCell(x, y).getIcon() == " ")
-			Reveal(x, y);
+			reveal(x, y);
 	}
 }
 
@@ -189,7 +202,7 @@ function mouseReleased()
 	clearTimeout(holdTimer)
 }
 
-function Reveal(x, y)
+function reveal(x, y)
 {
 	for(let i = x-1; i < x+2; i++)
   	{
@@ -207,7 +220,7 @@ function Reveal(x, y)
 				grid.getCell(i, j).setRevealState(true);
 
 			if(grid.getCell(i, j).getIcon() == " ")  
-				Reveal(i, j);
+				reveal(i, j);
 		}
   	}
 }

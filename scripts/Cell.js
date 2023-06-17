@@ -56,10 +56,4 @@ class Cell
 
     setIcon = (newValue) => this.icon = newValue;
     getIcon = () => this.icon;
-
-    // RGBToHex(num)
-    // {
-    //     let h = num.toString(16)
-    //     return h.length === 1 ? "0" + h : h
-    // }
 }
