@@ -8,15 +8,17 @@ class Cell
         this.y = y;
         this.containsBomb = false;
         this.revealState = false; // The cell start hidden
+        this.isMarked = false 
         this.textSize = 0; // Max 50
         this.textAlpha = 0; // Max 255
-        this.hexRandomColor = "#" + this.RGBToHex(floor(random(256))) + this.RGBToHex(floor(random(256))) + 
-        this.RGBToHex(floor(random(256))) // Only for the bombs
     }
 
     getX = () => this.x;
     getY = () => this.y;
     getSize = () => this.size;
+
+    getMark = () => this.isMarked
+    setMark = (value) => this.isMarked = value
 
     showAnimation()
     {
@@ -34,11 +36,11 @@ class Cell
             case "1":
                 return "#547ed1"
             case "2":
-                return "#005900"
+                return "#6732c2"
             case "☠":
-                return this.hexRandomColor
+                return "#332c30"
             default:
-                return "#ff0000"
+                return "#1613e8"
         }
     }
 
@@ -55,9 +57,9 @@ class Cell
     setIcon = (newValue) => this.icon = newValue;
     getIcon = () => this.icon;
 
-    RGBToHex(num)
-    {
-        let h = num.toString(16)
-        return h.length === 1 ? "0" + h : h
-    }
+    // RGBToHex(num)
+    // {
+    //     let h = num.toString(16)
+    //     return h.length === 1 ? "0" + h : h
+    // }
 }

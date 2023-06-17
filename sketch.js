@@ -1,14 +1,17 @@
 // ======================== Game State Variables ==========================\\
 const GameState = { WAIT: 0, PLAY: 1, WIN: 2, LOSE: 3 }
 let CurrentGameState = GameState.WAIT
+const holdDuration = 200 // Used to place bomb mark
+let holdTimer
 // =========================== Grid Variables =============================\\
 var grid;
-var canvasSizeX = 450, canvasSizeY = 450, cellSize = 50
-var topMenuSizeY = 60
-var bombsNum = 10, availableFlagsNum = 25
+const canvasSizeX = 450, canvasSizeY = 450, cellSize = 50
+const topMenuSizeY = 60
+let bombsNum = 10, availableFlagsNum = 25
+let currentBombsNum = bombsNum, currentAvailableFlagsNum = availableFlagsNum
 // =========================== GUI Variables =============================\\
-var selectSizeX = 90
-var defaultHtmlPadding = 16 // 1em = 16
+const selectSizeX = 90
+const defaultHtmlPadding = 16 // 1em = 16
 let startTime = 0
 let elapsedTime = 0
 let secondSinceStart = 0, minuteSinceStart = 0
@@ -16,31 +19,67 @@ let secondSinceStart = 0, minuteSinceStart = 0
 function setup() 
 {
 	// GRID Initial Position
-	createCanvas(canvasSizeX, canvasSizeY + topMenuSizeY);
+	
+	generateField(0, 0, 0)
+
+	dropdown = createSelect()
+	dropdown.position(defaultHtmlPadding + (canvasSizeX / 2) - selectSizeX/2, topMenuSizeY / 2)
+	dropdown.size(selectSizeX, topMenuSizeY / 2)
+	dropdown.option("Easy")
+	dropdown.option("Medium")
+	dropdown.option("Hard")
+	dropdown.changed(handleLVChange)
+}
+
+function handleLVChange()
+{
+	let optSelected = dropdown.value()
+	if(optSelected == "Easy")
+	{
+		generateField(0, 0, 0)
+	} else if(optSelected == "Medium")
+	{
+		generateField(0, 150, 20)
+	} else 
+	{
+		generateField(50, 150, 30)
+	}
+}
+
+function draw() {
+	background('#168aad');
+	if(grid) grid.place()
+	drawTopMenu()
+}
+
+function generateField(additionalWidth, additionalHeight, additionalBombs)
+{
+	createCanvas(canvasSizeX + additionalWidth, canvasSizeY + topMenuSizeY + additionalHeight)
 	startTime = millis()
 	var cell = []
-
-	var gridSizeX = floor((canvasSizeX/cellSize))
-	var gridSizeY = floor(((canvasSizeY)/cellSize))
+	
+	let gridSizeX = floor(((canvasSizeX + additionalWidth)/cellSize))
+	let gridSizeY = floor(((canvasSizeY + additionalHeight)/cellSize))
+	currentBombsNum = bombsNum + additionalBombs
+	currentAvailableFlagsNum = availableFlagsNum
 
 	for(let i = 0; i < gridSizeX; i++)
 	{ 
 		cell.push([]);
 		for(let j = 0; j < gridSizeY; j++)		
 			cell[i].push(new Cell(cellSize, i*cellSize, j*cellSize));
-		
 	}
 
 	// Insert the bombs (skull)
-	while (bombsNum > 0) 
+	while (currentBombsNum > 0) 
 	{
-		let gridLine = Math.floor(Math.random() * (canvasSizeX/cellSize));
-		let gridCol = Math.floor(Math.random() * (canvasSizeY/cellSize));
+		let gridLine = Math.floor(Math.random() * gridSizeX)
+		let gridCol = Math.floor(Math.random() * gridSizeY)
 		if(!cell[gridLine][gridCol].getContainsBomb())
 		{
 			cell[gridLine][gridCol].placeBomb(true)
 			cell[gridLine][gridCol].setIcon("☠")
-			bombsNum--;
+			currentBombsNum--;
 		}  
 	}
 
@@ -49,7 +88,7 @@ function setup()
 	{ 
 		for(let j = 0; j < gridSizeY; j++)
 		{
-			var bomb_num = 0
+			let bomb_num = 0
 			if(!cell[i][j].getContainsBomb())
 			{
 				// Horizontal
@@ -71,20 +110,6 @@ function setup()
 		}
 	}
 	grid = new Grid(0, topMenuSizeY, cell, gridSizeX, gridSizeY);
-
-
-	dropdown = createSelect()
-	dropdown.position(defaultHtmlPadding + (canvasSizeX / 2) - selectSizeX/2, topMenuSizeY / 2)
-	dropdown.size(selectSizeX, topMenuSizeY / 2)
-	dropdown.option("Easy")
-	dropdown.option("Medium")
-	dropdown.option("Hard")
-}
-
-function draw() {
-	background('#168aad');
-	grid.place()
-	drawTopMenu()
 }
 
 function drawTopMenu()
@@ -103,10 +128,10 @@ function drawTopMenu()
 	}
 	
 	text("⏰ "
-		+ (minuteSinceStart > 9 ? minuteSinceStart : "0" + minuteSinceStart) +":"
+		+ (minuteSinceStart > 9 ? minuteSinceStart : "0" + minuteSinceStart) + ":"
 		+ (secondSinceStart > 9 ? secondSinceStart : "0" + secondSinceStart), 0, topMenuSizeY / 1.5)
 	// 🏴‍☠️ 🚩 ⏰
-	text("🏴‍☠️"+availableFlagsNum, width - (topMenuSizeY * 1.5), topMenuSizeY / 1.5)
+	text("🏴‍☠️"+currentAvailableFlagsNum, width - (topMenuSizeY * 1.5), topMenuSizeY / 1.5)
 } 
 
 // Draw Win and Lose Menu
@@ -119,14 +144,49 @@ function drawStateMenu()
 
 
 function mouseClicked() {
-	var x = Math.floor(mouseX/cellSize);
-	var y = Math.floor((mouseY - topMenuSizeY)/cellSize);
+	let x = Math.floor(mouseX/cellSize);
+	let y = Math.floor((mouseY - topMenuSizeY)/cellSize);
 	if(grid.getCell(x, y) && !grid.getCell(x, y).getRevealState())
 	{
+		if(grid.getCell(x, y).getMark())
+		{
+			grid.getCell(x, y).setMark(false)
+			currentAvailableFlagsNum++
+		}
 		grid.getCell(x,y).setRevealState(true);
 		if(grid.getCell(x, y).getIcon() == " ")
-		Reveal(x, y);
+			Reveal(x, y);
 	}
+}
+
+function mousePressed()
+{
+	holdTimer = setTimeout(placeMark, holdDuration)
+}
+
+function placeMark()
+{
+	let x = Math.floor(mouseX/cellSize);
+	let y = Math.floor((mouseY - topMenuSizeY)/cellSize);
+	if(grid.getCell(x, y) && !grid.getCell(x, y).getRevealState())
+	{
+		// Place Mark
+		if(grid.getCell(x, y).getMark())
+		{
+			grid.getCell(x, y).setMark(false)
+			currentAvailableFlagsNum++
+		}			
+		else if(currentAvailableFlagsNum > 0 && !grid.getCell(x, y).getMark())
+		{
+			grid.getCell(x, y).setMark(true)
+			currentAvailableFlagsNum--
+		}	
+	}
+}
+
+function mouseReleased()
+{
+	clearTimeout(holdTimer)
 }
 
 function Reveal(x, y)
@@ -136,6 +196,12 @@ function Reveal(x, y)
 		for(let j = y-1; j < y+2; j++)
 		{
 			if((i == x && j == y) || grid.getCell(i, j) == null || grid.getCell(i, j).getRevealState()) continue;
+
+			if(grid.getCell(i, j).getMark())
+			{
+				grid.getCell(i, j).setMark(false)
+				currentAvailableFlagsNum++
+			}
 
 			if(!grid.getCell(i, j).getContainsBomb())
 				grid.getCell(i, j).setRevealState(true);

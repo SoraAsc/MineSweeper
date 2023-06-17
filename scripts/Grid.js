@@ -29,6 +29,14 @@ class Grid
 				rect(this.cell[i][j].getX() + this.x, this.cell[i][j].getY() + this.y, this.cell[i][j].getSize());
 				
 				// Painting the text
+				if(this.cell[i][j].getMark()) 
+				{
+					textSize(35);
+					let textColor = color(this.cell[i][j].getTextColor())
+					textColor.setAlpha(this.cell[i][j].getTextAlpha())
+					textStyle("normal")
+					text("🏴‍☠️",this.cell[i][j].getX() + this.x, 38 + this.cell[i][j].getY() + this.y)
+				}
 				if(this.cell[i][j].getRevealState())
 				{
 					textSize(this.cell[i][j].getTextSize());
