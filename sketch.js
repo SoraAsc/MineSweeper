@@ -4,7 +4,7 @@ let CurrentGameState = GameState.WAIT
 const holdDuration = 200 // Used to place bomb mark
 let holdTimer
 // =========================== Grid Variables =============================\\
-var grid;
+let grid;
 const canvasSizeX = 450, canvasSizeY = 450, cellSize = 50
 const topMenuSizeY = 60
 let bombsNum = 10, availableFlagsNum = 25
@@ -19,8 +19,6 @@ let secondSinceStart = 0, minuteSinceStart = 0
 // ============================== Functions ================================\\
 function setup() 
 {
-	// GRID Initial Position
-
 	dropdown = createSelect()
 	dropdown.size(selectSizeX, topMenuSizeY / 2)
 	dropdown.option("Easy")
@@ -39,7 +37,8 @@ function draw() {
 	
 	grid.place()
 	drawTopMenu()
-	if(grid.checkIfThePlayerWin()) drawStateMenu()
+	if(CurrentGameState == GameState.WIN) drawStateMenu("You Win")
+	else if(CurrentGameState == GameState.LOSE) drawStateMenu("You Lost")
 }
 
 function handleLVChange()
@@ -61,16 +60,15 @@ function handleLVChange()
 function generateField(additionalWidth, additionalHeight, additionalBombs)
 {
 	createCanvas(canvasSizeX + additionalWidth, canvasSizeY + topMenuSizeY + additionalHeight)
-
 	dropdown.position(defaultHtmlPadding + ((canvasSizeX + additionalWidth) / 2) - selectSizeX/2, topMenuSizeY / 2)
 	gUIRestartButton.position(defaultHtmlPadding + ((canvasSizeX + additionalWidth) / 2) - 100, height/1.5)
 	gUIRestartButton.hide()
 	startTime = millis()
 	var cell = []
 	
-	let gridSizeX = floor(((canvasSizeX + additionalWidth)/cellSize))
-	let gridSizeY = floor(((canvasSizeY + additionalHeight)/cellSize))
-	currentBombsNum = bombsNum + additionalBombs
+	let gridSizeX = Math.floor(((canvasSizeX + additionalWidth)/cellSize))
+	let gridSizeY = Math.floor(((canvasSizeY + additionalHeight)/cellSize))
+	currentBombsNum = bombsNum + additionalBombs // 1
 	currentAvailableFlagsNum = availableFlagsNum
 
 	for(let i = 0; i < gridSizeX; i++)
@@ -120,6 +118,9 @@ function generateField(additionalWidth, additionalHeight, additionalBombs)
 		}
 	}
 	grid = new Grid(0, topMenuSizeY, cell, gridSizeX, gridSizeY);
+	CurrentGameState = GameState.WAIT
+
+	setTimeout(() => CurrentGameState = GameState.PLAY, 100)
 }
 
 function drawTopMenu()
@@ -129,29 +130,33 @@ function drawTopMenu()
 	textSize(topMenuSizeY / 2)
 	textStyle("italic")
 	fill(255, 255, 255, 200)
-	elapsedTime = millis() - startTime
-	secondSinceStart = int((elapsedTime/1000)%60)
-	if(elapsedTime >= 60000)
+	if(CurrentGameState == GameState.PLAY)
 	{
-		startTime = millis()
-		minuteSinceStart++;
+		elapsedTime = millis() - startTime
+		secondSinceStart = int((elapsedTime/1000)%60)
+		if(elapsedTime >= 60000)
+		{
+			startTime = millis()
+			minuteSinceStart++;
+		}
 	}
-	
-	text("⏰ "
-		+ (minuteSinceStart > 9 ? minuteSinceStart : "0" + minuteSinceStart) + ":"
-		+ (secondSinceStart > 9 ? secondSinceStart : "0" + secondSinceStart), 0, topMenuSizeY / 1.5)
+	let currentTimeString = (minuteSinceStart > 9 ? minuteSinceStart : "0" + minuteSinceStart) + ":"
+	+ (secondSinceStart > 9 ? secondSinceStart : "0" + secondSinceStart)
+
+	text("⏰ " + currentTimeString, 0, topMenuSizeY / 1.5)
 	// 🏴‍☠️ 🚩 ⏰
 	text("🏴‍☠️"+currentAvailableFlagsNum, width - (topMenuSizeY * 1.5), topMenuSizeY / 1.5)
 } 
 
 // Draw Win and Lose Menu
-function drawStateMenu()
+function drawStateMenu(message)
 {
 	fill(0,0,0, 100)
 	rect(width / 4, height / 4, width / 2, height / 2)
 	textSize(30)
 	fill(255,255,255)
-	text("You Win", width / 2 - 60, height / 2)
+	text(message, width / 2 - 60, height / 2)
+	text("Best: "+localStorage.getItem("saved_time"+dropdown.value()), width / 2 - 80,  height / 3)
 	gUIRestartButton.show()
 }
 
@@ -159,7 +164,7 @@ function drawStateMenu()
 function mouseClicked() {
 	let x = Math.floor(mouseX/cellSize);
 	let y = Math.floor((mouseY - topMenuSizeY)/cellSize);
-	if(grid.getCell(x, y) && !grid.getCell(x, y).getRevealState() && !grid.checkIfThePlayerWin())
+	if(grid.getCell(x, y) && !grid.getCell(x, y).getRevealState() && CurrentGameState == GameState.PLAY)
 	{
 		if(grid.getCell(x, y).getMark())
 		{
@@ -169,6 +174,21 @@ function mouseClicked() {
 		grid.getCell(x,y).setRevealState(true);
 		if(grid.getCell(x, y).getIcon() == " ")
 			reveal(x, y);
+		if(grid.checkIfThePlayerWin())
+		{
+			CurrentGameState = GameState.WIN
+			let previousTime = parseFloat(localStorage.getItem("saved_minutes"+dropdown.value())) + 
+				parseFloat(localStorage.getItem("saved_seconds"+dropdown.value()))/60
+			if(isNaN(previousTime) || ((minuteSinceStart + secondSinceStart/60) < previousTime))
+			{
+				localStorage.setItem("saved_minutes"+dropdown.value(), minuteSinceStart)
+				localStorage.setItem("saved_seconds"+dropdown.value(), secondSinceStart)
+				localStorage.setItem("saved_time"+dropdown.value(), (minuteSinceStart > 9 ? minuteSinceStart : "0" + minuteSinceStart) + ":"
+					+ (secondSinceStart > 9 ? secondSinceStart : "0" + secondSinceStart))
+			}
+		}	
+		else if(grid.getCell(x,y).getContainsBomb())
+			CurrentGameState = GameState.LOSE
 	}
 }
 
