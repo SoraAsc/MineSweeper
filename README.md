@@ -1,4 +1,4 @@
-# <img src="https://p5js.org/assets/img/p5js.svg" height="10"/> MineSweeper <img src="https://p5js.org/assets/img/p5js.svg" height="10"/>
+# <img src="https://p5js.org/assets/img/p5js.svg" height="20"/> MineSweeper <img src="https://p5js.org/assets/img/p5js.svg" height="20"/>
 
 ## 📖 About
 
